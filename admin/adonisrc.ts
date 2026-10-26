@@ -59,6 +59,7 @@ export default defineConfig({
     () => import('#providers/version_check_provider'),
     () => import('#providers/gpu_passthrough_remediation_provider'),
     () => import('#providers/drug_install_row_provider'),
+    () => import('#providers/field_sensor_provider'),
   ],
 
   /*

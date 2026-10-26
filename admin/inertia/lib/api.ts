@@ -17,6 +17,7 @@ import BenchmarkResult from '#models/benchmark_result'
 import { BenchmarkType, RunBenchmarkResponse, SubmitBenchmarkResponse, UpdateBuilderTagResponse } from '../../types/benchmark'
 import type { CreateMapMarkerPayload, MapMarkerResponse, UpdateMapMarkerPayload } from '../../types/maps'
 import type { ChatSource } from '../../types/chat'
+import type { FieldConfig, FieldState } from '../../types/field'
 import { chatStreamErrorMessage } from './chat_stream.js'
 
 type OllamaChatRequestWithImages = OllamaChatRequest & { images?: File[] }
@@ -809,6 +810,20 @@ class API {
     return catchInternal(async () => {
       const response = await this.client.get<{ files: FileEntry[] }>('/maps/regions')
       return response.data.files
+    })()
+  }
+
+  // Polled every second by the Field page and the map, so failures are left to the
+  // caller to show as "no link" rather than raising a toast on every tick.
+  async getFieldState() {
+    const response = await this.client.get<FieldState>('/field/state')
+    return response.data
+  }
+
+  async updateFieldConfig(config: FieldConfig) {
+    return catchInternal(async () => {
+      const response = await this.client.put<FieldConfig>('/field/config', config)
+      return response.data
     })()
   }
 

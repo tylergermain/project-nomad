@@ -20,6 +20,7 @@ import CoordinateOverlay from './CoordinateOverlay'
 import ViewMapMarkerPopup from './ViewMapMarkerPopup'
 import MapMarkerFormPopup from './MapMarkerFormPopup'
 import ScaleUnitToggle from './ScaleUnitSelector'
+import FieldMapLayer from './FieldMapLayer'
 
 type ScaleUnit = 'imperial' | 'metric' | 'nautical'
 
@@ -34,6 +35,8 @@ type MapComponentProps = {
   mapCommand?: MapCommand | null
   isHoveringUI?: boolean
   showCoordinatesEnabled?: boolean
+  /** Overlay live GPS position and aircraft from the Field sensors. */
+  showFieldLayer?: boolean
 }
 
 type MapLocationParams = {
@@ -134,6 +137,7 @@ export default function MapComponent({
                                        mapCommand,
                                        isHoveringUI = false,
                                        showCoordinatesEnabled = true,
+                                       showFieldLayer = false,
                                      }: MapComponentProps) {
   const mapRef = useRef<MapRef>(null)
   const animationFrameRef = useRef<number | null>(null)
@@ -427,6 +431,8 @@ export default function MapComponent({
               </div>
             </Marker>
           )}
+
+          <FieldMapLayer enabled={showFieldLayer} />
 
           <ScaleUnitToggle
             scaleUnit={scaleUnit}
