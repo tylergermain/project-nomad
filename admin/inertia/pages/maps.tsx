@@ -4,9 +4,11 @@ import { Head, Link, router } from '@inertiajs/react'
 import MapsLayout from '~/layouts/MapsLayout'
 import MapComponent from '~/components/maps/MapComponent'
 import StyledButton from '~/components/StyledButton'
-import { IconArrowLeft, IconCrosshair, IconMapPin, IconPlaneTilt } from '@tabler/icons-react'
+import { IconArrowLeft, IconCrosshair, IconMapPin, IconPlaneTilt, IconRadar } from '@tabler/icons-react'
 import { FileEntry } from '../../types/files'
 import Alert from '~/components/Alert'
+
+const FIELD_LAYER_KEY = 'nomad:map-field-layer'
 
 type MapCommand = {
   id: number
@@ -23,6 +25,24 @@ export default function Maps(props: {
   const [coordinateSearch, setCoordinateSearch] = useState('')
   const [mapCommand, setMapCommand] = useState<MapCommand | null>(null)
   const [showCoordinatesEnabled, setShowCoordinatesEnabled] = useState(true)
+  const [showFieldLayer, setShowFieldLayer] = useState(() => {
+    try {
+      return localStorage.getItem(FIELD_LAYER_KEY) === 'true'
+    } catch {
+      return false
+    }
+  })
+
+  const toggleFieldLayer = () => {
+    setShowFieldLayer((prev) => {
+      try {
+        localStorage.setItem(FIELD_LAYER_KEY, String(!prev))
+      } catch {
+        // ignore persistence failures (private mode, quota)
+      }
+      return !prev
+    })
+  }
 
   const parseCoordinates = () => {
     const [latRaw, lngRaw] = coordinateSearch.split(',').map((value) => value.trim())
@@ -121,6 +141,20 @@ export default function Maps(props: {
               <IconCrosshair size={18}/>
             </button>
 
+            <button
+              type="button"
+              onClick={toggleFieldLayer}
+              className={`rounded border border-border-default p-2 transition-colors ${
+                showFieldLayer
+                  ? 'bg-desert-green text-white'
+                  : 'bg-surface-primary text-text-secondary hover:bg-surface-secondary'
+              }`}
+              title={showFieldLayer ? 'Hide my position and aircraft' : 'Show my position and aircraft (Field sensors)'}
+              aria-pressed={showFieldLayer}
+            >
+              <IconRadar size={18}/>
+            </button>
+
             <Link href="/settings/maps" className="mr-4">
               <StyledButton variant="primary" icon="IconSettings">
                 Manage Map Regions
@@ -158,6 +192,7 @@ export default function Maps(props: {
             mapCommand={mapCommand}
             isHoveringUI={isHoveringUI}
             showCoordinatesEnabled={showCoordinatesEnabled}
+            showFieldLayer={showFieldLayer}
           />
         </div>
       </div>

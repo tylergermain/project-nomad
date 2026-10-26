@@ -4,6 +4,7 @@ import {
   IconHelp,
   IconMapRoute,
   IconPill,
+  IconRadar,
   IconSettings,
   IconWifiOff,
 } from '@tabler/icons-react'
@@ -37,6 +38,19 @@ const MAPS_ITEM = {
   icon: <IconMapRoute size={48} />,
   installed: true,
   displayOrder: 4,
+  poweredBy: null,
+}
+
+// Field: live GPS, ADS-B aircraft radar, and sun/moon times. Sits next to Maps
+// since its waypoints are the map markers.
+const FIELD_ITEM = {
+  label: 'Field',
+  to: '/field',
+  target: '',
+  description: 'GPS position, aircraft radar, sunrise and moon phase',
+  icon: <IconRadar size={48} />,
+  installed: true,
+  displayOrder: 4.5,
   poweredBy: null,
 }
 
@@ -209,6 +223,7 @@ export default function Home(props: {
 
   // Add Maps as a Core Capability
   items.push(MAPS_ITEM)
+  items.push(FIELD_ITEM)
 
   // Add the offline medical-reference tiles only once the FDA drug dataset is
   // installed (or installing) via the curated Medicine tier. Both tiles read the

@@ -13,6 +13,7 @@ import DocsController from '#controllers/docs_controller'
 import DrugReferenceController from '#controllers/drug_reference_controller'
 import DownloadsController from '#controllers/downloads_controller'
 import EasySetupController from '#controllers/easy_setup_controller'
+import FieldController from '#controllers/field_controller'
 import HomeController from '#controllers/home_controller'
 import MapsController from '#controllers/maps_controller'
 import NomadMdController from '#controllers/nomad_md_controller'
@@ -92,6 +93,7 @@ import {
 import { updateNomadMdSchema } from '#validators/nomad_md'
 import { searchDrugValidator, interactionsValidator } from '#validators/drug_reference'
 import { conditionDrugsValidator } from '#validators/conditions'
+import { fieldConfigValidator } from '#validators/field'
 
 transmit.registerRoutes()
 
@@ -100,6 +102,7 @@ router.get('/home', [HomeController, 'home'])
 router.on('/about').renderInertia('about')
 router.get('/chat', [ChatsController, 'inertia'])
 router.get('/maps', [MapsController, 'index'])
+router.get('/field', [FieldController, 'index'])
 router.get('/supply-depot', [SupplyDepotController, 'index'])
 router.on('/knowledge-base').redirectToPath('/chat?knowledge_base=true') // redirect for legacy knowledge-base links
 
@@ -253,6 +256,24 @@ router
     })
   })
   .prefix('/api/maps')
+
+router
+  .group(() => {
+    documented(router.get('/state', [FieldController, 'state']), {
+      summary: 'Live GPS fix, nearby aircraft and sun/moon times',
+      tags: ['field'],
+    })
+    documented(router.get('/config', [FieldController, 'config']), {
+      summary: 'Get Field sensor sources',
+      tags: ['field'],
+    })
+    documented(router.put('/config', [FieldController, 'updateConfig']), {
+      summary: 'Set Field sensor sources',
+      tags: ['field'],
+      request: fieldConfigValidator,
+    })
+  })
+  .prefix('/api/field')
 
 router
   .group(() => {

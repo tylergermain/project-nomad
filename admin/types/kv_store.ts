@@ -102,6 +102,13 @@ export const KV_STORE_SCHEMA = {
   // herbal REMEDY sections stay hidden until this flips true. Defaults off
   // (null → false); flipped on after a clinician content-pass, not user-toggled.
   'drugReference.remediesEnabled': 'boolean',
+  // Field page sensor sources (see types/field.ts for the accepted formats).
+  // Unset means 'off'. Home coordinates are stringified numbers; unset means no
+  // fallback position until the GPS has a fix.
+  'field.gpsSource':            'string',
+  'field.adsbSource':           'string',
+  'field.homeLat':              'string',
+  'field.homeLon':              'string',
 } as const
 
 type KVTagToType<T extends string> = T extends 'boolean' ? boolean : string
